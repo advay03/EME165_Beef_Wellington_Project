@@ -5,7 +5,7 @@ clearvars; close all; clc;
 
 contact_resistance = 10^-3;
 T_initial = 20+273;
-T_inf = 220+273;
+T_infinity = (180:10:220)+273;
 eps = 0.8;
 h = 35;
 sigma = 5.67e-8; % Stefan-Boltzmann constant
@@ -41,11 +41,20 @@ Fo_b= ((k_b*dt)/(rho_b*c_b*dr^2));
 % Initialize temperature array
 T = ones(n,1) * T_initial;
 
+for m = 1:numel(T_infinity)
+    T_inf = T_infinity(m);
+
+    % --- reset per ambient case ---
+    T = ones(n,1)*T_initial;
+    c = 1;
+    time = 0;
+    q_t = [];           % heat rate history (W)
+    t_vec = []; 
 
 while T(1,c) < T_final
 %Outside boundary
 i=26;
-c=c+1
+c=c+1;
 
 T(i,c)=2*Fo_p*(((0.075 - (dr/2))/(0.075 - (dr/4)))*(T(i-1,c-1) - T(i,c-1))+((h*0.075*dr)/(k_p*(0.075 - (dr/4))))*(T_inf - T(i,c-1))+((sigma*eps*0.075*dr)/(k_p*(0.075-(dr/4))))*(T_inf^4 - T(i,c-1)^4)) + T(i,c-1);
 
@@ -91,7 +100,7 @@ end
 
 
  % ---- Plot T vs r at selected time steps ----
-figure(i); clf; hold on;
+figure(m); clf; hold on;
 
 % valid indices (rounded and limited to >=1)
 idx_now    = c;
@@ -116,3 +125,4 @@ drawnow;
 q_total = sum(q_t(:));
 fprintf('\nQ = %.6f J',q_total)
 fprintf('\nT_S = %.2f C',T(end,c)-273)
+end
