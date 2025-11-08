@@ -22,10 +22,10 @@ T_final = 53+273;
 dr = 0.3125/100;
 
 %% Initial conditions
-% rho = [rho_b,rho_m,rho_p];
-% k = [k_b,k_m,k_p];
-% Cp = [c_b,c_m,c_p]; 
-dt=1;
+rho = [rho_b,rho_m,rho_p];
+k = [k_b,k_m,k_p];
+Cp = [c_b,c_m,c_p]; 
+dt= min(rho.*Cp.*dr.^2./(2.*k))/10;
 t=0; 
 % r = 0:dr:7.5/100; % radial distance from the center
 r1=0:dr:0.0625;
@@ -86,12 +86,11 @@ fprintf('%d',time)
 q_rad = eps*sigma*2*pi*0.075*(T_inf^4-T(end,c)^4);
 q_conv = h * 2 * pi * 0.075 * (T_inf - T(end,c));
 q_t(c) = q_rad + q_conv;  
-
 end
 
 
  % ---- Plot T vs r at selected time steps ----
-figure(i); clf; hold on;
+figure(1); clf; hold on;
 
 % valid indices (rounded and limited to >=1)
 idx_now    = c;
